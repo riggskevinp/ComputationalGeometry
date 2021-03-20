@@ -1,0 +1,3 @@
+[submodule "Project/Triangulation/googletest"]
+	path = Project/Triangulation/googletest
+	url = https://github.com/google/googletest.git
