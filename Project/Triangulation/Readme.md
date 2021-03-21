@@ -46,8 +46,10 @@ Connect()
 Swap()
 
 ### Data Structures and objects
-Point
+Point - opencv
 Edge
+QuadEdge
+
 
 ## Incremental
 

@@ -5,23 +5,42 @@ project(Triangulation LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /MT")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+
+# MAKE SURE OPENCV IS INSTALLED CORRECTLY
+find_package( OpenCV REQUIRED )
+
+
+# INCLUDE OPENCV DIRECTORIES
+include_directories( ${OpenCV_INCLUDE_DIRS})
+
 
 ################################
 # GTest
 ################################
 ADD_SUBDIRECTORY (googletest)
 enable_testing()
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${OpenCV_LIBS})
+
 
 ################################
 # Unit Tests
 ################################
 # Add test cpp file
-add_executable( runUnitTests testgtest.cpp )
+add_executable( runUnitTests
+    testgtest.cpp
+    )
 # Link test executable against gtest & gtest_main
 target_link_libraries(runUnitTests gtest gtest_main)
 add_test( runUnitTests runUnitTests )
 
 
 
-add_executable(Triangulation main.cpp)
+add_executable(Triangulation
+    main.cpp
+    quadedge.cpp
+    quadedge.h
+
+    )
+target_link_libraries(Triangulation ${OpenCV_LIBS})
