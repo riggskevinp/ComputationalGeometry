@@ -30,6 +30,12 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${OpenCV_LIB
 # Add test cpp file
 add_executable( runUnitTests
     testgtest.cpp
+    quadedge.cpp
+    quadedge.h
+    face.h
+    face.cpp
+    vertex.h
+    vertex.cpp
     )
 # Link test executable against gtest & gtest_main
 target_link_libraries(runUnitTests gtest gtest_main)
@@ -41,6 +47,9 @@ add_executable(Triangulation
     main.cpp
     quadedge.cpp
     quadedge.h
-
+    face.h
+    face.cpp
+    vertex.h
+    vertex.cpp
     )
 target_link_libraries(Triangulation ${OpenCV_LIBS})

@@ -4,39 +4,37 @@
 #include <memory>
 #include <array>
 
-#include "face.h"
 #include "vertex.h"
-
-
+#include "face.h"
 
 class Edge
 {
 public:
-    Edge();
+    Edge(){};
 
     // Getters Setters
     std::shared_ptr<Vertex> getOrg(){return this->vert;}
     void setOrg(std::shared_ptr<Vertex> p){
         this->vert = p;
-        // implment p->addEdge(this);
+        p->addEdge(this->edges->at(index));
     }
 
     std::shared_ptr<Vertex> getDest(){return sym()->getOrg();}
     void setDest(std::shared_ptr<Vertex> p){
         sym()->setOrg(p);
-        // implement p->addEdge(Sym());
+        p->addEdge(sym());
     }
 
     std::shared_ptr<Face> getLeft(){return rot()->fac;}
     void setLeft(std::shared_ptr<Face> f){
         rot()->fac = f;
-        // implement f->addEdge(this);
+        f->addEdge(this->edges->at(index));
     }
 
     std::shared_ptr<Face> getRight(){return invRot()->fac;}
     void setRight(std::shared_ptr<Face> f){
         invRot()->fac = f;
-        // implement f->addEdge(sym());
+        f->addEdge(sym());
     }
 
     void setNext(std::shared_ptr<Edge> e){this->next = e;}
@@ -47,14 +45,20 @@ public:
     uint16_t getIndex(){return this->index;}
 
     // Topological Operators
-    std::shared_ptr<Edge> makeEdge();
-    void splice(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b);
+    static std::shared_ptr<Edge> makeEdge();
+    static void splice(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b);
 
 
     // Topological Operators for Delaunay Diagrams
     std::shared_ptr<Edge> connect(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b/* and Side?*/);
     void deleteEdge(std::shared_ptr<Edge> e);
     void swap(std::shared_ptr<Edge> e);
+
+    // Tests
+    static double inCircle(const Vertex& a, const Vertex& b, const Vertex& c, const Vertex& d);
+    static bool CCW();
+    static bool rightOf();
+    static bool leftOf();
 
     // QuadEdge
     std::shared_ptr<Edge> rot(){return edges->at((index+1)%4);}
@@ -79,17 +83,6 @@ private:
     std::shared_ptr<std::array<std::shared_ptr<Edge>,4>> edges = nullptr;
     static uint64_t nextID;
 
-
-};
-
-class QuadEdge
-{
-public:
-    QuadEdge();
-private:
-    // Edge store as e0.Rot^r.Flip^f
-    // r : {0,1,2,3}; f : {0,1}
-    std::array<Edge, 4> edges;
 
 };
 

@@ -10,6 +10,11 @@ std::shared_ptr<Edge> Edge::makeEdge()
     // Edge store as e0.Rot^r
     // r : {0,1,2,3}
     auto edges = std::make_shared<std::array<std::shared_ptr<Edge>,4>>();
+    edges->at(0) = std::make_shared<Edge>();
+    edges->at(1) = std::make_shared<Edge>();
+    edges->at(2) = std::make_shared<Edge>();
+    edges->at(3) = std::make_shared<Edge>();
+
     edges->at(0)->setIndex(0);
     edges->at(1)->setIndex(1);
     edges->at(2)->setIndex(2);
@@ -74,4 +79,27 @@ void Edge::swap(std::shared_ptr<Edge> e)
         e->setOrg(a->getDest());
         e->setDest(b->getDest());
     }
+}
+
+double Edge::inCircle(const Vertex& a, const Vertex& b, const Vertex& c, const Vertex& d)
+{
+    double adx, ady, bdx, bdy, cdx, cdy;
+    double abdet, bcdet, cadet;
+    double alift, blift, clift;
+
+    adx = a.getX() - d.getX();
+    ady = a.getY() - d.getY();
+    bdx = b.getX() - d.getX();
+    bdy = b.getY() - d.getY();
+    cdx = c.getX() - d.getX();
+    cdy = c.getY() - d.getY();
+
+    abdet = adx * bdy - bdx * ady;
+    bcdet = bdx * cdy - cdx * bdy;
+    cadet = cdx * ady - adx * cdy;
+    alift = adx * adx + ady * ady;
+    blift = bdx * bdx + bdy * bdy;
+    clift = cdx * cdx + cdy * cdy;
+
+    return alift * bcdet + blift * cadet + clift * abdet;
 }
