@@ -36,9 +36,21 @@ add_executable( runUnitTests
     face.cpp
     vertex.h
     vertex.cpp
+    delaunay.h
+    delaunay.cpp
+    csv.h
+
     )
+
+add_custom_command(
+          TARGET runUnitTests POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy
+                  ${CMAKE_SOURCE_DIR}/test/test.csv
+                  ${CMAKE_CURRENT_BINARY_DIR}/test.csv
+                  )
+
 # Link test executable against gtest & gtest_main
-target_link_libraries(runUnitTests gtest gtest_main)
+target_link_libraries(runUnitTests gtest gtest_main ${OpenCV_LIBS})
 add_test( runUnitTests runUnitTests )
 
 
@@ -51,5 +63,8 @@ add_executable(Triangulation
     face.cpp
     vertex.h
     vertex.cpp
+    delaunay.h
+    delaunay.cpp
+    csv.h
     )
 target_link_libraries(Triangulation ${OpenCV_LIBS})

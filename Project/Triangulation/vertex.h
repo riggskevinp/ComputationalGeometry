@@ -6,6 +6,8 @@
 #include <vector>
 #include <memory>
 
+#include <opencv2/core/types.hpp>
+
 class Edge;
 
 class Vertex
@@ -17,24 +19,25 @@ public:
     }
 
     Vertex(double x, double y){
-        p.first = x;
-        p.second = y;
+        cp.x = x;
+        cp.y = y;
         ID = nextID;
         nextID += 1;
     }
 
-    double getX() const {return p.first;}
-    void setX(double x){p.first = x;}
-    double getY() const {return p.second;}
-    void setY(double y){p.second = y;}
+    double getX() const {return cp.x;}
+    void setX(double x){cp.x = x;}
+    double getY() const {return cp.y;}
+    void setY(double y){cp.y = y;}
     uint64_t getID() const {return ID;}
     void addEdge(std::shared_ptr<Edge> e){edges.push_back(e);}
-
+    cv::Point2d getPoint()const{return cp;}
+    static bool compareVertices(const Vertex& a, const Vertex& b);
 
 
 private:
     std::vector<std::shared_ptr<Edge>> edges;
-    std::pair<double,double> p;
+    cv::Point2d cp;
     uint64_t ID;
     static uint64_t nextID;
 

@@ -2,61 +2,54 @@
 
 #include <array>
 #include <memory>
+#include <set>
+
 
 uint64_t Edge::nextID = 0;
 
 std::shared_ptr<Edge> Edge::makeEdge()
 {
-    // Edge store as e0.Rot^r
-    // r : {0,1,2,3}
-    auto edges = std::make_shared<std::array<std::shared_ptr<Edge>,4>>();
-    edges->at(0) = std::make_shared<Edge>();
-    edges->at(1) = std::make_shared<Edge>();
-    edges->at(2) = std::make_shared<Edge>();
-    edges->at(3) = std::make_shared<Edge>();
+    auto e1 = std::make_shared<Edge>();
+    auto e2 = std::make_shared<Edge>();
+    auto e3 = std::make_shared<Edge>();
+    auto e4 = std::make_shared<Edge>();
 
-    edges->at(0)->setIndex(0);
-    edges->at(1)->setIndex(1);
-    edges->at(2)->setIndex(2);
-    edges->at(3)->setIndex(3);
-
-    edges->at(0)->setNext(edges->at(0));
-    edges->at(1)->setNext(edges->at(3));
-    edges->at(2)->setNext(edges->at(2));
-    edges->at(3)->setNext(edges->at(1));
-
-    edges->at(0)->setID(Edge::nextID);
-    edges->at(1)->setID(Edge::nextID+1);
-    edges->at(2)->setID(Edge::nextID+2);
-    edges->at(3)->setID(Edge::nextID+3);
-
+    e1->setID(Edge::nextID);
+    e2->setID(Edge::nextID+1);
+    e3->setID(Edge::nextID+2);
+    e4->setID(Edge::nextID+3);
     Edge::nextID += 4;
 
-    edges->at(0)->edges = edges;
-    edges->at(1)->edges = edges;
-    edges->at(2)->edges = edges;
-    edges->at(3)->edges = edges;
+    e1->oNext = e1;
+    e2->oNext = e2;
+    e3->oNext = e4;
+    e4->oNext = e3;
 
-    return edges->at(0);
+    e1->rot = e3;
+    e2->rot = e4;
+    e3->rot = e2;
+    e4->rot = e1;
+
+    return e1;
 
 }
 
 void Edge::splice(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b)
 {
     if(a != nullptr && b != nullptr){
-        std::shared_ptr<Edge> alpha = a->oNext()->rot();
-        std::shared_ptr<Edge> beta = b->oNext()->rot();
-
-        std::shared_ptr<Edge> temp1 = b->oNext();
-        std::shared_ptr<Edge> temp2 = a->oNext();
-        std::shared_ptr<Edge> temp3 = beta->oNext();
-        std::shared_ptr<Edge> temp4 = alpha->oNext();
-
-        a->next = temp1;
-        b->next = temp2;
-        alpha->next = temp3;
-        beta->next = temp4;
+        a->oNext.swap(b->oNext);
+        a->oNext->rotf()->oNext.swap(b->oNext->rotf()->oNext);
     }
+}
+
+std::shared_ptr<Edge> Edge::connect(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b)
+{
+    auto e = Edge::makeEdge();
+    e->setOrg(a->getDest());
+    e->setDest(b->getOrg());
+    Edge::splice(e, a->lNext());
+    Edge::splice(e->sym(), b);
+    return e;
 }
 
 void Edge::deleteEdge(std::shared_ptr<Edge> e)
@@ -83,6 +76,7 @@ void Edge::swap(std::shared_ptr<Edge> e)
 
 double Edge::inCircle(const Vertex& a, const Vertex& b, const Vertex& c, const Vertex& d)
 {
+    // As demonstrated in predicates.c incircle()
     double adx, ady, bdx, bdy, cdx, cdy;
     double abdet, bcdet, cadet;
     double alift, blift, clift;
@@ -103,3 +97,49 @@ double Edge::inCircle(const Vertex& a, const Vertex& b, const Vertex& c, const V
 
     return alift * bcdet + blift * cadet + clift * abdet;
 }
+
+double Edge::CCW(const Vertex &a, const Vertex &b, const Vertex &c)
+{
+    // As demonstrated in predicates.c orient2dfast()
+    double acx, bcx, acy, bcy;
+
+    acx = a.getX() - c.getX();
+    bcx = b.getX() - c.getX();
+    acy = a.getY() - c.getY();
+    bcy = b.getY() - c.getY();
+
+    return acx * bcy - acy * bcx;
+}
+
+void Edge::displayPoints(std::vector<Vertex> s, cv::Mat& m)
+{
+    //int height = 500;
+    //int width = 500;
+
+    //auto img = cv::Mat(height, width, CV_8UC3, cv::Scalar(255, 255, 255));
+
+    for(auto p: s){
+        cv::circle(m, p.getPoint(), 0, cv::Scalar(0,0,255),5);
+    }
+    cv::imshow("Vertices", m);
+
+}
+
+void Edge::visualizeHull(std::pair<std::shared_ptr<Edge>, std::shared_ptr<Edge> > hull, cv::Mat m)
+{
+    std::set<uint64_t> vertVisited;
+    std::shared_ptr<Edge> temp = hull.first;
+    while((temp->getOrg()->getID() != hull.second->getOrg()->getID()) && (vertVisited.find(temp->getOrg()->getID()) == vertVisited.end())){
+        cv::arrowedLine(m, temp->getOrg()->getPoint(), temp->getDest()->getPoint(), cv::Scalar(0,255,0), 5);
+        vertVisited.insert(temp->getOrg()->getID());
+        temp = temp->lNext();
+    }
+    temp = hull.second->oPrev();
+    vertVisited.clear();
+    while(temp->getOrg()->getID() != hull.first->getOrg()->getID() && (vertVisited.find(temp->getOrg()->getID()) == vertVisited.end())){
+        cv::arrowedLine(m, temp->getOrg()->getPoint(), temp->getDest()->getPoint(), cv::Scalar(255,0,0), 1);
+        temp = temp->lNext();
+    }
+}
+
+

@@ -5,7 +5,7 @@ using horizontal cuts (at even depths of the recursion tree) and vertical cuts (
 points into two subsets. Rex Dwyer
 [] Implement the incremental insertion algorithm.  Guibas and Stolfi suboptimal walking method.
 [] Implement fast point location incremental.
-[] Code will take as input a csv file containing, use floating point.
+[x] Code will take as input a csv file containing, use floating point.
 [] Instructions for running will be included including how to build.
 [] A table containing timings for each of the algorithms or point location methods on random points
 sets of 10,000, 100,000, 1,000,000 points.  (If runtime longer than 30 minutes cut short and note)

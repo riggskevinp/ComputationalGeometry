@@ -4,6 +4,10 @@
 #include <memory>
 #include <array>
 
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+
 #include "vertex.h"
 #include "face.h"
 
@@ -13,10 +17,10 @@ public:
     Edge(){};
 
     // Getters Setters
-    std::shared_ptr<Vertex> getOrg(){return this->vert;}
+    std::shared_ptr<Vertex> getOrg(){return this->origin;}
     void setOrg(std::shared_ptr<Vertex> p){
-        this->vert = p;
-        p->addEdge(this->edges->at(index));
+        this->origin = p;
+        p->addEdge(this->sym()->sym());//->edges->at(index));
     }
 
     std::shared_ptr<Vertex> getDest(){return sym()->getOrg();}
@@ -25,20 +29,19 @@ public:
         p->addEdge(sym());
     }
 
-    std::shared_ptr<Face> getLeft(){return rot()->fac;}
+    std::shared_ptr<Face> getLeft(){return rotf()->fac;}
     void setLeft(std::shared_ptr<Face> f){
-        rot()->fac = f;
-        f->addEdge(this->edges->at(index));
+        rotf()->fac = f;
+        f->addEdge(this->sym()->sym());//->edges->at(index));
     }
 
-    std::shared_ptr<Face> getRight(){return invRot()->fac;}
+    std::shared_ptr<Face> getRight(){return invRotf()->fac;}
     void setRight(std::shared_ptr<Face> f){
-        invRot()->fac = f;
+        invRotf()->fac = f;
         f->addEdge(sym());
     }
 
-    void setNext(std::shared_ptr<Edge> e){this->next = e;}
-    std::shared_ptr<Edge> getNext(){return this->next;}
+    void setNext(std::shared_ptr<Edge> e){this->oNext = e;}
     void setID(uint64_t i){this->ID = i;}
     uint64_t getID(){return this->ID;}
     void setIndex(uint16_t i){this->index = i;}
@@ -50,37 +53,42 @@ public:
 
 
     // Topological Operators for Delaunay Diagrams
-    std::shared_ptr<Edge> connect(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b/* and Side?*/);
-    void deleteEdge(std::shared_ptr<Edge> e);
+    static std::shared_ptr<Edge> connect(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b/* and Side?*/);
+    static void deleteEdge(std::shared_ptr<Edge> e);
     void swap(std::shared_ptr<Edge> e);
 
     // Tests
     static double inCircle(const Vertex& a, const Vertex& b, const Vertex& c, const Vertex& d);
-    static bool CCW();
-    static bool rightOf();
-    static bool leftOf();
+    static double CCW(const Vertex& a, const Vertex& b, const Vertex& c);
+    static double rightOf(const Vertex& x, Edge& e){return CCW(x, *(e.getDest()), *(e.getOrg()));}
+    static double leftOf(const Vertex& x, Edge& e){return CCW(x, *(e.getOrg()), *(e.getDest()));}
+    static double valid(Edge& e, Edge& b1){ return rightOf(*(e.getDest()),b1);}
+
 
     // QuadEdge
-    std::shared_ptr<Edge> rot(){return edges->at((index+1)%4);}
-    std::shared_ptr<Edge> invRot(){return edges->at((index+3)%4);}
-    std::shared_ptr<Edge> sym(){return edges->at((index+2)%4);}
-    std::shared_ptr<Edge> oNext(){return next;}
-    std::shared_ptr<Edge> oPrev(){return edges->at((index+1)%4)->next->rot();}
-    std::shared_ptr<Edge> dNext(){return sym()->oNext()->sym();}
-    std::shared_ptr<Edge> dPrev(){return invRot()->oNext()->invRot();}
-    std::shared_ptr<Edge> lNext(){return invRot()->oNext()->rot();}
-    std::shared_ptr<Edge> lPrev(){return oNext()->sym();}
-    std::shared_ptr<Edge> rNext(){return rot()->oNext()->invRot();}
-    std::shared_ptr<Edge> rPrev(){return sym()->oNext();}
+    std::shared_ptr<Edge> rotf(){return rot;}
+    std::shared_ptr<Edge> rot = nullptr;
+    std::shared_ptr<Edge> invRotf(){return rot->rot->rot;}
+    std::shared_ptr<Edge> sym(){return rot->rot;}
+    std::shared_ptr<Edge> oNextf(){return oNext;}
+    std::shared_ptr<Edge> oNext = nullptr;
+    std::shared_ptr<Edge> oPrev(){return rot->oNext->rotf();}
+    std::shared_ptr<Edge> dNext(){return sym()->oNext->sym();}
+    std::shared_ptr<Edge> dPrev(){return invRotf()->oNext->invRotf();}
+    std::shared_ptr<Edge> lNext(){return invRotf()->oNext->rotf();}
+    std::shared_ptr<Edge> lPrev(){return oNext->sym();}
+    std::shared_ptr<Edge> rNext(){return rotf()->oNext->invRotf();}
+    std::shared_ptr<Edge> rPrev(){return sym()->oNext;}
 
+    // Visualizers
+    static void displayPoints(std::vector<Vertex> s, cv::Mat& m);
+    static void visualizeHull(std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> hull, cv::Mat m);
 
 private:
-    std::shared_ptr<Vertex> vert = nullptr;
+    std::shared_ptr<Vertex> origin = nullptr;
     std::shared_ptr<Face> fac = nullptr;
-    std::shared_ptr<Edge> next = nullptr;
     uint64_t ID;
     uint16_t index;
-    std::shared_ptr<std::array<std::shared_ptr<Edge>,4>> edges = nullptr;
     static uint64_t nextID;
 
 
