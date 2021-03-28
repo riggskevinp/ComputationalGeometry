@@ -134,7 +134,7 @@ void Edge::visualizeHull(std::pair<std::shared_ptr<Edge>, std::shared_ptr<Edge> 
         vertVisited.insert(temp->getOrg()->getID());
         temp = temp->rPrev();
     }
-    temp = hull.second->oPrev();
+    temp = hull.second->sym()->rPrev();
     vertVisited.clear();
     while(temp->getOrg()->getID() != hull.first->getOrg()->getID() && (vertVisited.find(temp->getOrg()->getID()) == vertVisited.end())){
         cv::arrowedLine(m, temp->getOrg()->getPoint(), temp->getDest()->getPoint(), cv::Scalar(255,0,0), 1);
