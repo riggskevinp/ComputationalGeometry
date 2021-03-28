@@ -37,8 +37,10 @@ std::shared_ptr<Edge> Edge::makeEdge()
 void Edge::splice(std::shared_ptr<Edge> a, std::shared_ptr<Edge> b)
 {
     if(a != nullptr && b != nullptr){
+        std::shared_ptr<Edge> alpha = a->oNext->rot;
+        std::shared_ptr<Edge> beta = b->oNext->rot;
         a->oNext.swap(b->oNext);
-        a->oNext->rotf()->oNext.swap(b->oNext->rotf()->oNext);
+        alpha->oNext.swap(beta->oNext);
     }
 }
 
@@ -54,10 +56,8 @@ std::shared_ptr<Edge> Edge::connect(std::shared_ptr<Edge> a, std::shared_ptr<Edg
 
 void Edge::deleteEdge(std::shared_ptr<Edge> e)
 {
-    if(e != nullptr){
-        splice(e, e->oPrev());
-        splice(e->sym(), e->sym()->oPrev());
-    }
+    splice(e, e->oPrev());
+    splice(e->sym(), e->sym()->oPrev());
 }
 
 void Edge::swap(std::shared_ptr<Edge> e)
@@ -132,13 +132,14 @@ void Edge::visualizeHull(std::pair<std::shared_ptr<Edge>, std::shared_ptr<Edge> 
     while((temp->getOrg()->getID() != hull.second->getOrg()->getID()) && (vertVisited.find(temp->getOrg()->getID()) == vertVisited.end())){
         cv::arrowedLine(m, temp->getOrg()->getPoint(), temp->getDest()->getPoint(), cv::Scalar(0,255,0), 5);
         vertVisited.insert(temp->getOrg()->getID());
-        temp = temp->lNext();
+        temp = temp->rPrev();
     }
     temp = hull.second->oPrev();
     vertVisited.clear();
     while(temp->getOrg()->getID() != hull.first->getOrg()->getID() && (vertVisited.find(temp->getOrg()->getID()) == vertVisited.end())){
         cv::arrowedLine(m, temp->getOrg()->getPoint(), temp->getDest()->getPoint(), cv::Scalar(255,0,0), 1);
-        temp = temp->lNext();
+        vertVisited.insert(temp->getOrg()->getID());
+        temp = temp->rPrev();
     }
 }
 

@@ -29,23 +29,21 @@ public:
         p->addEdge(sym());
     }
 
-    std::shared_ptr<Face> getLeft(){return rotf()->fac;}
+    std::shared_ptr<Face> getLeft(){return rot->fac;}
     void setLeft(std::shared_ptr<Face> f){
-        rotf()->fac = f;
+        rot->fac = f;
         f->addEdge(this->sym()->sym());//->edges->at(index));
     }
 
-    std::shared_ptr<Face> getRight(){return invRotf()->fac;}
+    std::shared_ptr<Face> getRight(){return invRot()->fac;}
     void setRight(std::shared_ptr<Face> f){
-        invRotf()->fac = f;
+        invRot()->fac = f;
         f->addEdge(sym());
     }
 
     void setNext(std::shared_ptr<Edge> e){this->oNext = e;}
     void setID(uint64_t i){this->ID = i;}
     uint64_t getID(){return this->ID;}
-    void setIndex(uint16_t i){this->index = i;}
-    uint16_t getIndex(){return this->index;}
 
     // Topological Operators
     static std::shared_ptr<Edge> makeEdge();
@@ -66,18 +64,17 @@ public:
 
 
     // QuadEdge
-    std::shared_ptr<Edge> rotf(){return rot;}
     std::shared_ptr<Edge> rot = nullptr;
-    std::shared_ptr<Edge> invRotf(){return rot->rot->rot;}
+    std::shared_ptr<Edge> invRot(){return rot->rot->rot;}
     std::shared_ptr<Edge> sym(){return rot->rot;}
     std::shared_ptr<Edge> oNextf(){return oNext;}
     std::shared_ptr<Edge> oNext = nullptr;
-    std::shared_ptr<Edge> oPrev(){return rot->oNext->rotf();}
+    std::shared_ptr<Edge> oPrev(){return rot->oNext->rot;}
     std::shared_ptr<Edge> dNext(){return sym()->oNext->sym();}
-    std::shared_ptr<Edge> dPrev(){return invRotf()->oNext->invRotf();}
-    std::shared_ptr<Edge> lNext(){return invRotf()->oNext->rotf();}
+    std::shared_ptr<Edge> dPrev(){return invRot()->oNext->invRot();}
+    std::shared_ptr<Edge> lNext(){return invRot()->oNext->rot;}
     std::shared_ptr<Edge> lPrev(){return oNext->sym();}
-    std::shared_ptr<Edge> rNext(){return rotf()->oNext->invRotf();}
+    std::shared_ptr<Edge> rNext(){return rot->oNext->invRot();}
     std::shared_ptr<Edge> rPrev(){return sym()->oNext;}
 
     // Visualizers
@@ -88,7 +85,6 @@ private:
     std::shared_ptr<Vertex> origin = nullptr;
     std::shared_ptr<Face> fac = nullptr;
     uint64_t ID;
-    uint16_t index;
     static uint64_t nextID;
 
 

@@ -136,29 +136,31 @@ TEST_F(QuadTest, ThreeSitesCW) {
         std::cout << "le origin " << c->sym()->getOrg()->getID() << " re origin " << c->getOrg()->getID() << std::endl;
         std::cout << "le destination " << c->sym()->getDest()->getID() << " re destination " << c->getDest()->getID() << std::endl;
     }
-
-
 }
 
-TEST_F(QuadTest, VisualizeVertices){
-    auto img = cv::Mat(500, 500, CV_8UC3, cv::Scalar(255, 255, 255));
-    std::string filename = "genTest.csv";
-    std::vector<Vertex> S = Delaunay::generateRandomPoints(10,filename);
-    Edge::displayPoints(S, img);
-    cv::imwrite("testVert.jpg", img);
+TEST_F(QuadTest, CCW) {
+  // Sorted order
+    auto v1 = std::make_shared<Vertex>(Vertex(1.0,1.0));
+    auto v2 = std::make_shared<Vertex>(Vertex(2.0,1.0));
+    auto v3 = std::make_shared<Vertex>(Vertex(2.0,2.0));
+
+    EXPECT_GT(Edge::CCW(*v1, *v2, *v3), 0);
+    EXPECT_LT(Edge::CCW(*v1, *v3, *v2), 0);
 }
 
-TEST_F(QuadTest, VisualizeEdges){
-    auto img = cv::Mat(500, 500, CV_8UC3, cv::Scalar(255, 255, 255));
-    std::string filename = "genTest.csv";
-    std::vector<Vertex> S = Delaunay::generateRandomPoints(3,filename);
-    std::sort(S.begin(),S.end(), Vertex::compareVertices);
-    Edge::displayPoints(S, img);
-    std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> res = Delaunay::divideAndConquer(S);
-    Edge::visualizeHull(res,img);
-    cv::imwrite("testEdge.jpg", img);
-}
+TEST_F(QuadTest, InCircle) {
+  // Sorted order
+    auto v1 = std::make_shared<Vertex>(Vertex(1.0,1.0));
+    auto v2 = std::make_shared<Vertex>(Vertex(3.0,1.0));
+    auto v3 = std::make_shared<Vertex>(Vertex(1.0,3.0));
+    auto v4 = std::make_shared<Vertex>(Vertex(10.0,10.0));
+    auto v5 = std::make_shared<Vertex>(Vertex(2.5,2.5));
 
+    EXPECT_LT(Edge::inCircle(*v1, *v2, *v3, *v4), 0);
+    EXPECT_GT(Edge::inCircle(*v1, *v3, *v2, *v4), 0);
+    EXPECT_GT(Edge::inCircle(*v1, *v2, *v3, *v5), 0);
+    EXPECT_LT(Edge::inCircle(*v1, *v3, *v2, *v5), 0);
+}
 
 TEST(Delaunay, readCSV){
     std::string filename = "test.csv";
@@ -177,22 +179,6 @@ TEST(Delaunay, randPointsandGenCSV){
     }
 }
 
-TEST(Delaunay, divideAndConquerA){
-    std::string filename = "test.csv";
-    std::vector<Vertex> S = Delaunay::readCSV(filename);
-    std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> res = Delaunay::divideAndConquer(S);
-}
-
-TEST(Delaunay, divideAndConquerA2){
-    auto img = cv::Mat(500, 500, CV_8UC3, cv::Scalar(255, 255, 255));
-    std::string filename = "genTest.csv";
-    std::vector<Vertex> S = Delaunay::generateRandomPoints(2,filename);
-    std::sort(S.begin(),S.end(), Vertex::compareVertices);
-    std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> res = Delaunay::divideAndConquer(S);
-    Edge::visualizeHull(res,img);
-    cv::imwrite("edge2sites.jpg", img);
-}
-
 TEST(Delaunay, divideAndConquerA3){
     std::string filename = "genTest.csv";
     std::vector<Vertex> S = Delaunay::generateRandomPoints(3,filename);
@@ -202,7 +188,7 @@ TEST(Delaunay, divideAndConquerA3){
 
 TEST(Delaunay, divideAndConquerARand10){
     std::string filename = "genTest.csv";
-    std::vector<Vertex> S = Delaunay::generateRandomPoints(4,filename);
+    std::vector<Vertex> S = Delaunay::generateRandomPoints(20,filename);
     std::sort(S.begin(),S.end(), Vertex::compareVertices);
     std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> res = Delaunay::divideAndConquer(S);
     auto img = cv::Mat(500, 500, CV_8UC3, cv::Scalar(255, 255, 255));
@@ -212,8 +198,8 @@ TEST(Delaunay, divideAndConquerARand10){
 }
 
 TEST(Delaunay, divideAndConquerAEdgeCase10){
-    std::string filename = "genTest.csv";
-    std::vector<Vertex> S = Delaunay::generateRandomPoints(3,filename);
+    std::string filename = "test.csv";
+    std::vector<Vertex> S = Delaunay::readCSV(filename);
     std::sort(S.begin(),S.end(), Vertex::compareVertices);
     std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> res = Delaunay::divideAndConquer(S);
 }

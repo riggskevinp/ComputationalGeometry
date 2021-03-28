@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.13.3, 2021-03-26T12:23:00. -->
+<!-- Written by QtCreator 4.13.3, 2021-03-26T20:57:38. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -71,8 +71,6 @@
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:ThreeSitesCW">Checked</value>
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:ThreeSitesCollinear">Checked</value>
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:TwoSitesOneEdge">Checked</value>
-    <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:VisualizeEdges">Checked</value>
-    <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:VisualizeVertices">Checked</value>
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:divideAndConquerA">Checked</value>
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:divideAndConquerA2">Checked</value>
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:divideAndConquerA3">Checked</value>
