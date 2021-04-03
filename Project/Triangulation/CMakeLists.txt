@@ -67,4 +67,10 @@ add_executable(Triangulation
     delaunay.cpp
     csv.h
     )
+add_custom_command(
+          TARGET Triangulation POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy_directory
+                  ${CMAKE_SOURCE_DIR}/test/
+                  ${CMAKE_CURRENT_BINARY_DIR}
+                  )
 target_link_libraries(Triangulation ${OpenCV_LIBS})

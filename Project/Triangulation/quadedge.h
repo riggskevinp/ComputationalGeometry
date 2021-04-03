@@ -80,6 +80,7 @@ public:
     // Visualizers
     static void displayPoints(std::vector<Vertex> s, cv::Mat& m);
     static void visualizeHull(std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> hull, cv::Mat m);
+    static void traverseHull(std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> hull);
 
 private:
     std::shared_ptr<Vertex> origin = nullptr;

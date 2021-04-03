@@ -3,6 +3,7 @@
 #include <array>
 #include <memory>
 #include <set>
+#include <iostream>
 
 
 uint64_t Edge::nextID = 0;
@@ -138,6 +139,24 @@ void Edge::visualizeHull(std::pair<std::shared_ptr<Edge>, std::shared_ptr<Edge> 
     vertVisited.clear();
     while(temp->getOrg()->getID() != hull.first->getOrg()->getID() && (vertVisited.find(temp->getOrg()->getID()) == vertVisited.end())){
         cv::arrowedLine(m, temp->getOrg()->getPoint(), temp->getDest()->getPoint(), cv::Scalar(255,0,0), 1);
+        vertVisited.insert(temp->getOrg()->getID());
+        temp = temp->rPrev();
+    }
+}
+
+void Edge::traverseHull(std::pair<std::shared_ptr<Edge>, std::shared_ptr<Edge> > hull)
+{
+    std::set<uint64_t> vertVisited;
+    std::shared_ptr<Edge> temp = hull.first;
+    while((temp->getOrg()->getID() != hull.second->getOrg()->getID()) && (vertVisited.find(temp->getOrg()->getID()) == vertVisited.end())){
+        std::cout << "(" << temp->getOrg()->getX() << "," << temp->getOrg()->getY() << ")" << std::endl;
+        vertVisited.insert(temp->getOrg()->getID());
+        temp = temp->rPrev();
+    }
+    temp = hull.second->sym()->rPrev();
+    vertVisited.clear();
+    while(temp->getOrg()->getID() != hull.first->getOrg()->getID() && (vertVisited.find(temp->getOrg()->getID()) == vertVisited.end())){
+        std::cout << "(" << temp->getOrg()->getX() << "," << temp->getOrg()->getY() << ")" << std::endl;
         vertVisited.insert(temp->getOrg()->getID());
         temp = temp->rPrev();
     }
