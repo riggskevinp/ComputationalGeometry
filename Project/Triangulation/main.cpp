@@ -60,6 +60,40 @@ int main(int argc, char *argv[])
                   << std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count()
                   << " seconds" << std::endl;
 
+        // Alternate Cuts
+        input = Delaunay::generateRandomPoints(10000, "genTest10K");
+        std::sort(input.begin(),input.end(), Vertex::compareVertices);
+        startTime = std::chrono::system_clock::now();
+        res = Delaunay::divideAndConquerAlt(input,true);
+        endTime = std::chrono::system_clock::now();
+        std::cout << "Alt Cut Algorithm time for input size n = "
+                  << input.size()
+                  << ", "
+                  << std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count()
+                  << " seconds" << std::endl;
+
+        input = Delaunay::generateRandomPoints(100000, "genTest100K");
+        std::sort(input.begin(),input.end(), Vertex::compareVertices);
+        startTime = std::chrono::system_clock::now();
+        res = Delaunay::divideAndConquerAlt(input,true);
+        endTime = std::chrono::system_clock::now();
+        std::cout << "Alt Cut Algorithm time for input size n = "
+                  << input.size()
+                  << ", "
+                  << std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count()
+                  << " seconds" << std::endl;
+
+        input = Delaunay::generateRandomPoints(1000000, "genTest1M");
+        std::sort(input.begin(),input.end(), Vertex::compareVertices);
+        startTime = std::chrono::system_clock::now();
+        res = Delaunay::divideAndConquerAlt(input,true);
+        endTime = std::chrono::system_clock::now();
+        std::cout << "Alt Cut Algorithm time for input size n = "
+                  << input.size()
+                  << ", "
+                  << std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count()
+                  << " seconds" << std::endl;
+
     }
     return 0;
 }

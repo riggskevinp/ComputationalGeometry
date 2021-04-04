@@ -215,14 +215,18 @@ std::pair<std::shared_ptr<Edge>, std::shared_ptr<Edge> > Delaunay::divideAndConq
             return res;
         }
     } else{
-        // Need to switch this out for a faster one.
-        if(even){
-            std::sort(s.begin(),s.end(), Vertex::compareVertices);
-        } else{
-            std::sort(s.begin(),s.end(), Vertex::compareVerticesHoriz);
-        }
-        // Split S in half
         std::size_t const half_size = s.size() / 2;
+        // https://www.geeksforgeeks.org/stdnth_element-in-cpp/
+        if(even){
+            //std::sort(s.begin(),s.end(), Vertex::compareVertices);
+            std::nth_element(s.begin(), s.begin() + half_size, s.end(), Vertex::compareVertices);
+        } else{
+            //std::sort(s.begin(),s.end(), Vertex::compareVerticesHoriz);
+            std::nth_element(s.begin(), s.begin() + half_size, s.end(), Vertex::compareVerticesHoriz);
+        }
+
+
+        // Split S in half
         std::vector<Vertex> leftHalf(s.begin(), s.begin() + half_size);
         std::vector<Vertex> rightHalf(s.begin() + half_size, s.end());
         // [ldo,ldi] = Delaunay[L]; [rdi,rdo] = Delaunay[R]
