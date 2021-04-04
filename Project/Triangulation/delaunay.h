@@ -16,6 +16,7 @@ public:
     static std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> divideAndConquer(std::vector<Vertex> s);
     static std::vector<Vertex> readCSV(std::string filename);
     static std::vector<Vertex> generateRandomPoints(uint64_t count, std::string filename);
+    static std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> divideAndConquerAlt(std::vector<Vertex> s, bool even);
 
 };
 

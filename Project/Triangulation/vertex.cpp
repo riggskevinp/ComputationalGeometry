@@ -11,3 +11,12 @@ bool Vertex::compareVertices(const Vertex& a, const Vertex& b)
         return a.getY() < b.getY();
     }
 }
+
+bool Vertex::compareVerticesHoriz(const Vertex &a, const Vertex &b)
+{
+    if(a.getY() != b.getY()){
+        return a.getY() > b.getY();
+    } else{
+        return a.getX() > b.getX();
+    }
+}

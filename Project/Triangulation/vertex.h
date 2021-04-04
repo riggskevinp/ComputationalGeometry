@@ -33,6 +33,7 @@ public:
     void addEdge(std::shared_ptr<Edge> e){edges.push_back(e);}
     cv::Point2d getPoint()const{return cp;}
     static bool compareVertices(const Vertex& a, const Vertex& b);
+    static bool compareVerticesHoriz(const Vertex& a, const Vertex& b);
 
 
 private:

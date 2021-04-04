@@ -188,7 +188,7 @@ TEST(Delaunay, divideAndConquerA3){
 
 TEST(Delaunay, divideAndConquerARand10){
     std::string filename = "genTest.csv";
-    std::vector<Vertex> S = Delaunay::generateRandomPoints(10000,filename);
+    std::vector<Vertex> S = Delaunay::generateRandomPoints(10,filename);
     std::sort(S.begin(),S.end(), Vertex::compareVertices);
     std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> res = Delaunay::divideAndConquer(S);
     auto img = cv::Mat(500, 500, CV_8UC3, cv::Scalar(255, 255, 255));
@@ -202,6 +202,17 @@ TEST(Delaunay, divideAndConquerAEdgeCase10){
     std::vector<Vertex> S = Delaunay::readCSV(filename);
     std::sort(S.begin(),S.end(), Vertex::compareVertices);
     std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> res = Delaunay::divideAndConquer(S);
+}
+
+TEST(Delaunay, divideAndConquerAltRand){
+    std::string filename = "genTest.csv";
+    std::vector<Vertex> S = Delaunay::generateRandomPoints(100,filename);
+    std::sort(S.begin(),S.end(), Vertex::compareVertices);
+    std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> res = Delaunay::divideAndConquerAlt(S, true);
+    auto img = cv::Mat(500, 500, CV_8UC3, cv::Scalar(255, 255, 255));
+    Edge::visualizeHull(res,img);
+    Edge::displayPoints(S, img);
+    cv::imwrite("DAndCAltRand.jpg", img);
 }
 
 int main(int argc, char **argv) {
