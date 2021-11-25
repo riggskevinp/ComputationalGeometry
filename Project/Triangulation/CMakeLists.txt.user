@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.13.3, 2021-04-03T20:01:09. -->
+<!-- Written by QtCreator 4.13.3, 2021-04-06T17:03:04. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -77,6 +77,7 @@
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:divideAndConquerAEdgeCase10">Checked</value>
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:divideAndConquerARand10">Checked</value>
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:divideAndConquerAltRand">Checked</value>
+    <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:locate">Checked</value>
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:randPointsandGenCSV">Checked</value>
     <value type="Qt::CheckState" key="C:/projects/ComputationalGeometry/Project/Triangulation/testgtest.cpp:readCSV">Checked</value>
    </valuemap>

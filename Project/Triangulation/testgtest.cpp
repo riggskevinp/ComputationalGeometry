@@ -215,6 +215,33 @@ TEST(Delaunay, divideAndConquerAltRand){
     cv::imwrite("DAndCAltRand.jpg", img);
 }
 
+TEST(Delaunay, locate){
+    auto v1 = std::make_shared<Vertex>(Vertex(0.0,0.0));
+    auto v2 = std::make_shared<Vertex>(Vertex(0.0,500.0));
+    auto v3 = std::make_shared<Vertex>(Vertex(500.0,0.0));
+    //auto v0 = std::make_shared<Vertex>(Vertex(400.0,430.0));
+    auto v4 = std::make_shared<Vertex>(Vertex(500.0,500.0));
+    std::vector<Vertex> S;
+    S.push_back(*v1);
+    S.push_back(*v4);
+    S.push_back(*v3);
+    S.push_back(*v2);
+    //S.push_back(*v0);
+    std::sort(S.begin(),S.end(), Vertex::compareVertices);
+    std::pair<std::shared_ptr<Edge>,std::shared_ptr<Edge>> res = Delaunay::divideAndConquer(S);
+    auto img = cv::Mat(500, 500, CV_8UC3, cv::Scalar(255, 255, 255));
+    Edge::visualizeHull(res,img);
+    auto v6 = std::make_shared<Vertex>(Vertex(10.0,5.0));
+    auto v5 = std::make_shared<Vertex>(Vertex(280.0,290.0));
+    S.push_back(*v6);
+    S.push_back(*v5);
+    Edge::displayPoints(S, img);
+    cv::imwrite("locate.jpg", img);
+
+    //std::cout << "edge: " << Delaunay::locate(*v6, res.first->sym())->getID() << std::endl;
+    //std::cout << "edge: " << Delaunay::locate(*v5, res.first)->getID() << std::endl;
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

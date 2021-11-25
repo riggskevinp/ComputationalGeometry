@@ -33,12 +33,12 @@ std::pair<std::shared_ptr<Edge>, std::shared_ptr<Edge>> Delaunay::divideAndConqu
         b->setDest(std::make_shared<Vertex>(s.at(2)));
 
         // Close the triangle
-        if(Edge::CCW(s.at(0), s.at(1), s.at(2)) > 0){
+        if(Edge::CCW(s.at(0), s.at(1), s.at(2)) >= 0){
             auto c = Edge::connect(b,a);
             res.first = a;
             res.second = b->sym();
             return res;
-        }else if(Edge::CCW(s.at(0), s.at(2), s.at(1)) > 0){
+        }else if(Edge::CCW(s.at(0), s.at(2), s.at(1)) >= 0){
             auto c = Edge::connect(b,a);
             res.first = c->sym();
             res.second = c;
@@ -331,8 +331,6 @@ std::pair<std::shared_ptr<Edge>, std::shared_ptr<Edge> > Delaunay::divideAndConq
                 base1 = Edge::connect(base1->sym(), lcand->sym());
             }
         }
-        // Update what ldo/rdo are?
-
 
         res.first.swap(ldo);
         res.second.swap(rdo);
@@ -340,4 +338,22 @@ std::pair<std::shared_ptr<Edge>, std::shared_ptr<Edge> > Delaunay::divideAndConq
     }
 
     return res;
+}
+
+std::shared_ptr<Edge> Delaunay::locate(const Vertex& x, std::shared_ptr<Edge> e)
+{
+    while(true){
+
+        if(e->getOrg()->getID() == x.getID() || x.getID() == e->getDest()->getID()){
+            return e;
+        } else if(Edge::rightOf(x, *(e)) > 0.0){
+            e = e->sym();
+        } else if(Edge::rightOf(x, *(e->oNext)) < 0.0){
+            e = e->oNext;
+        } else if(Edge::rightOf(x,*(e->dPrev())) < 0.0){
+            e = e->dPrev();
+        } else{
+            return e;
+        }
+    }
 }
